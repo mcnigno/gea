@@ -6,7 +6,7 @@ from app import appbuilder, db
 from .models import (DocRequests, Unit, Application, Doctype, Subdoctype, Domain, Job, Discipline,
                      Partner, Matrix, Document, Cdrlitem, Documentclass,
                      Vendor, Mr, Comments)
-from flask_appbuilder.fieldwidgets import Select2AJAXWidget
+from flask_appbuilder.fieldwidgets import Select2AJAXWidget, Select2SlaveAJAXWidget, TextField, BS3TextFieldWidget
 from flask_appbuilder.fields import AJAXSelectField
 from flask_appbuilder.models.group import aggregate_count, aggregate_sum
 from flask_appbuilder.widgets import ListThumbnail, ListBlock
@@ -38,14 +38,17 @@ from .momentjs import momentjs
 from flask import Markup
 from .widgets import MyListWidget 
 from flask_appbuilder.widgets import FormHorizontalWidget, FormInlineWidget, FormWidget, FormVerticalWidget
-
+from .comments import CommentsView
+from .widgets import MyListWidget
 ALLOWED_EXTENSIONS = set(['xlsx'])
 
-
+ 
 
 
 def get_user():
     return g.user
+
+
 
 class CsvView(BaseView):
     
@@ -450,6 +453,9 @@ class JobView(CompactCRUDMixin, ModelView):
     add_columns = ['job', 'name', 'description']
     edit_columns = ['job', 'name', 'description']
     show_columns = ['job', 'name', 'description']
+
+    related_views = [CommentsView]
+    show_template = 'appbuilder/general/model/show_cascade.html'
     
 
     @action("muldelete", "Delete", "Delete all Really?", "fa-rocket")
@@ -470,7 +476,8 @@ class UnitView(CompactCRUDMixin, ModelView):
     edit_columns = ['unit', 'name', 'unit_type', 'start', 'stop', 'description']
     show_columns = ['unit', 'name', 'unit_type', 'start', 'stop', 'description']
     
-    # list_widget = ListCarousel
+    related_views  = [CommentsView]
+    list_widget = MyListWidget
     # label_columns = ['unit','description']
     @action("muldelete", "Delete", "Delete all Really?", "fa-rocket")
     def muldelete(self, items):
@@ -489,6 +496,7 @@ class DisciplineView(CompactCRUDMixin, ModelView):
     edit_columns = ['discipline', 'name','description']
     show_columns = ['discipline', 'name', 'description']
     
+    related_views  = [CommentsView]
 
     @action("muldelete", "Delete", "Delete all Really?", "fa-rocket")
     def muldelete(self, items):
@@ -506,6 +514,7 @@ class ApplicationView(ModelView):
     add_columns = ['application', 'name', 'description']
     edit_columns = ['application', 'name', 'description']
     show_columns = ['application', 'name', 'description']
+    related_views = [CommentsView] 
     
     @action("muldelete", "Delete", "Delete all Really?", "fa-rocket")
     def muldelete(self, items):
@@ -516,28 +525,7 @@ class ApplicationView(ModelView):
             self.datamodel.delete(items)
         return redirect(self.get_redirect())
 
-
-class DoctypeView(MultipleView):
-    datamodel = SQLAInterface(Doctype)
-    '''
-    list_columns = ['doctype', 'name', 'description']
-    
-    add_columns = ['doctype', 'name', 'description']
-    edit_columns = ['doctype', 'name', 'description']
-    show_columns = ['doctype', 'name', 'description']
-    
-    #related_views = [Subdoctype]
-    
-    @action("muldelete", "Delete", "Delete all Really?", "fa-rocket")
-    def muldelete(self, items):
-        if isinstance(items, list):
-            self.datamodel.delete_all(items)
-            self.update_redirect()
-        else:
-            self.datamodel.delete(items)
-        return redirect(self.get_redirect())
-'''
-class SubdoctypeView(CompactCRUDMixin, ModelView):
+class SubdoctypeView(ModelView):
     datamodel = SQLAInterface(Subdoctype)
     list_columns = ['doctype', 'subdoctype', 'name', 'description']
 
@@ -545,7 +533,8 @@ class SubdoctypeView(CompactCRUDMixin, ModelView):
     edit_columns = ['doctype','subdoctype', 'name', 'description']
     show_columns = ['doctype','subdoctype', 'name', 'description']
     
-  
+    related_views = [CommentsView]
+
     @action("muldelete", "Delete", "Delete all Really?", "fa-rocket")
     def muldelete(self, items):
         if isinstance(items, list):
@@ -554,6 +543,29 @@ class SubdoctypeView(CompactCRUDMixin, ModelView):
         else:
             self.datamodel.delete(items)
         return redirect(self.get_redirect())
+
+class DoctypeView(ModelView):
+    datamodel = SQLAInterface(Doctype)
+    
+    list_columns = ['doctype', 'name', 'description']
+    related_views = [SubdoctypeView]
+    
+    add_columns = ['doctype', 'name', 'description']
+    edit_columns = ['doctype', 'name', 'description']
+    show_columns = ['doctype', 'name', 'description']
+    
+    related_views = [Subdoctype, CommentsView]
+    
+    @action("muldelete", "Delete", "Delete all Really?", "fa-rocket")
+    def muldelete(self, items):
+        if isinstance(items, list):
+            self.datamodel.delete_all(items)
+            self.update_redirect()
+        else:
+            self.datamodel.delete(items)
+        return redirect(self.get_redirect())
+    
+
 
 class DomainView(CompactCRUDMixin, ModelView):
     datamodel = SQLAInterface(Domain)
@@ -563,6 +575,7 @@ class DomainView(CompactCRUDMixin, ModelView):
     edit_columns = ['domain', 'name', 'description']
     show_columns = ['domain', 'name', 'description']
     
+    related_views = [CommentsView]
 
     @action("muldelete", "Delete", "Delete all Really?", "fa-rocket")
     def muldelete(self, items):
@@ -583,6 +596,8 @@ class PartnerView(ModelView):
     show_columns = ['partner', 'name', 'common_start', 'common_stop', 'description']
 
     list_widget = ListThumbnail
+    related_views = [CommentsView]
+
 
     @action("muldelete", "Delete", "Delete all Really?", "fa-rocket")
     def muldelete(self, items):
@@ -602,6 +617,9 @@ class CdrlitemView(ModelView):
     edit_columns = ['cdrlitem', 'name', 'description']
     show_columns = ['cdrlitem', 'name', 'description']
 
+    related_views = [CommentsView]
+
+
     @action("muldelete", "Delete", "Delete all Really?", "fa-rocket")
     def muldelete(self, items):
         if isinstance(items, list):
@@ -619,6 +637,9 @@ class DocumentclassView(ModelView):
     add_columns = ['documentclass', 'name', 'description']
     edit_columns = ['documentclass', 'name', 'description']
     show_columns = ['documentclass', 'name', 'description']
+
+    related_views = [CommentsView]
+
 
     @action("muldelete", "Delete", "Delete all Really?", "fa-rocket")
     def muldelete(self, items):
@@ -638,6 +659,9 @@ class VendorView(ModelView):
     edit_columns = ['vendor', 'name', 'description']
     show_columns = ['vendor', 'name', 'description']
 
+    related_views = [CommentsView]
+
+
     @action("muldelete", "Delete", "Delete all Really?", "fa-rocket")
     def muldelete(self, items):
         if isinstance(items, list):
@@ -656,6 +680,9 @@ class MrView(ModelView):
     edit_columns = ['mr', 'name', 'description']
     show_columns = ['mr', 'name', 'description']
 
+    related_views = [CommentsView]
+
+
     @action("muldelete", "Delete", "Delete all Really?", "fa-rocket")
     def muldelete(self, items):
         if isinstance(items, list):
@@ -665,7 +692,36 @@ class MrView(ModelView):
             self.datamodel.delete(items)
         return redirect(self.get_redirect())
 
+def get_doctype():
+    print(g.user)
+    return 1
 
+class GeaDocReqView(ModelView):
+    datamodel = SQLAInterface(DocRequests)
+    add_columns=['unit', 'DocType', 'subdoctype2']
+    '''
+    add_form_extra_fields = {'extra': TextField('Extra Field',
+    description='Extra Field description',
+    widget=BS3TextFieldWidget())}
+    '''
+    
+    add_form_extra_fields = {
+                    'DocType': AJAXSelectField('DocType',
+                    description='This will be populated with AJAX',
+                    datamodel=datamodel,
+                    col_name='doctype',
+                    widget=Select2AJAXWidget(endpoint='/geadocreqview/api/column/add/doctype'),
+                    is_related=True),
+
+
+                    'subdoctype2': AJAXSelectField('Sub DocType',
+                    description='Extra Field description',
+                    datamodel=datamodel,
+                    col_name='subdoctype',
+                    widget=Select2SlaveAJAXWidget(master_id='DocType',
+                    endpoint='/geadocreqview/api/column/add/subdoctype?_flt_0_doctype_id={{ID}}'))
+                    }
+    
 class DocRequestsView(ModelView):
     datamodel = SQLAInterface(DocRequests)
     default_view = 'add'
@@ -691,12 +747,14 @@ class DocRequestsView(ModelView):
     base_filters = [['created_by', FilterEqualFunction, get_user],
                     ['request_type', FilterEqual, 'engineering']
                     ] 
-    base_permissions = ['can_add','can_list','can_show'] 
+    #base_permissions = ['can_add','can_list','can_show'] 
     #related_views = [DocumentView]
+    #related_views = [CommentsView]
+
     show_template = 'appbuilder/general/model/show_cascade.html'
     edit_template = 'appbuilder/general/model/edit_cascade.html'
 
-    add_template = 'appbuilder/general/model/add_eng.html'
+    #add_template = 'appbuilder/general/model/add_eng.html'
 
     list_title = 'Document Code Request'
     add_title = 'Add Document Code Request'
@@ -709,15 +767,32 @@ class DocRequestsView(ModelView):
     
     list_columns = ['req_type', 'quantity', 'req_description', 'created_by', 'created']
     
-    edit_columns = ['unit', 'application', 'doctype', 'cdrlitem',
-                    'documentclass', 'partner']
+    #edit_columns = ['unit', 'application', 'doctype', 'cdrlitem','documentclass', 'partner']
     
     search_columns = ['unit', 'application', 'doctype', 'cdrlitem',
                       'documentclass', 'partner', 'quantity', 'created_on']
     search_columns = UnitView.search_columns
+    #edit_form_query_rel_fields = {'subdoctype': [['doctype_id',FilterEqualFunction, get_doctype]]} 
     
-    add_exclude_columns = ['id', 'matrix']
+    #add_exclude_columns = ['id', 'matrix']
+    #add_columns = ['unit']
+    add_form_extra_fields = {
+                    'DocType': AJAXSelectField('DocType',
+                    description='Select the Document Type',
+                    datamodel=datamodel,
+                    col_name='doctype',
+                    widget=Select2AJAXWidget(endpoint='/geadocreqview/api/column/add/doctype'),
+                    is_related=True),
 
+
+                    'subdoctype2': AJAXSelectField('Sub DocType',
+                    description='This selection is based on the Document Type.',
+                    datamodel=datamodel,
+                    col_name='subdoctype',
+                    widget=Select2SlaveAJAXWidget(master_id='DocType',
+                    endpoint='/geadocreqview/api/column/add/subdoctype?_flt_0_doctype_id={{ID}}'))
+                    }
+    
     add_fieldsets = [
                         (
                             'Number of Codes',
@@ -730,14 +805,19 @@ class DocRequestsView(ModelView):
                                         'unit',
                                         'discipline',
                                         'application',
-                                        'doctype',
-                                        'subdoctype',
+                                        'DocType',
+                                        'subdoctype2',
                                         'domain',
                                         'cdrlitem',
                                         'documentclass',
+
+                                        #'doctype2',
+                                        #'subdoctype2',
+
                                         'partner'], 'expanded':True}
                         ),
                      ]
+    
     show_fieldsets = [
                         (
                             'Number of Codes',
@@ -758,6 +838,7 @@ class DocRequestsView(ModelView):
                                         'partner'], 'expanded':True}
                         ),
                      ]
+    '''
     add_form_extra_fields = {
                     'unit2': AJAXSelectField('unit2',
                                              description='This is by AJAX',
@@ -765,11 +846,18 @@ class DocRequestsView(ModelView):
                                              col_name='unit',
                                              widget=Select2AJAXWidget(endpoint='/docrequestsview/api/column/add/unit')),
                                             }
+    '''
+    def pre_add(self, item):
+        # Set right fields when Ajax Select2 is used 
+        item.subdoctype = item.subdoctype2
+        item.doctype = item.DocType
 
     def post_add(self, item):
         #choice_unit(self, item)
         print('after cHoice')
         session_list = []
+
+        
         
         for i in range(0, item.quantity):
             print('****** Engineering Code Released ******')
@@ -802,6 +890,9 @@ class DocRequestsView(ModelView):
 class MatrixView(ModelView):
     datamodel = SQLAInterface(Matrix)
     list_columns = ['id', 'matrix', 'counter']
+
+    related_views = [CommentsView]
+
 
 
 
@@ -1105,12 +1196,7 @@ class Uploadcodes(BaseView):
         return self.render_template('upload_status.html')
 
 
-class CommentsView(ModelView):
-    datamodel = SQLAInterface(Comments)
-    list_columns = ['doc','comment', 'created_by', 'created', 'changed_by', 'modified']
-    add_columns = ['doc', 'comment']
-    show_columns = ['doc', 'comment', 'created_by', 'created', 'changed_by', 'modified']
-    edit_columns = ['comment']
+
     
 @appbuilder.app.errorhandler(404)
 def page_not_found(e):
@@ -1120,8 +1206,8 @@ def page_not_found(e):
 class DocumentView(CompactCRUDMixin, ModelView):
     datamodel = SQLAInterface(Document)
     list_title = 'Codes'
-    related_views = [CommentsView]
     
+    related_views = [CommentsView]
     
     base_order = ('id', 'desc')
     base_filters = [['created_by', FilterEqualFunction, get_user]]
@@ -1344,16 +1430,49 @@ class PartnerRequestView(MasterDetailView):
             self.datamodel.delete(items)
         return redirect(self.get_redirect())
 
+'''
+class CommentsView(ModelView):
+    datamodel = SQLAInterface(Comments)
+    order_columns = ['changed_on', 'created_on']
+    list_columns = ['comment', 'changed_by', 'modified']
+    #add_columns = ['comment', 'unit'] 
+    add_exclude_columns = ['unit','created_on','changed_on']
+    show_columns = ['doc', 'comment', 'changed_by', 'modified']
+    edit_columns = ['comment'] 
+    list_widget = ListBlock
 
+    add_fieldsets = [
+                        (
+                            'Text',
+                            {'fields': ['comment']}
+                        ),
+                        (
+                            'Related To',
+                            {'fields': [
+                                        'job',
+                                        'unit',
+                                        'discipline',
+                                        'application',
+                                        'doctype',
+                                        'subdoctype',
+                                        'domain',
+                                        'cdrlitem',
+                                        'documentclass',
+                                        'partner'], 'expanded':False}
+                        ),
+                     ]
+
+'''
 ## Flask migrate with Alembic instead of this
-db.create_all()
+#db.create_all()
 
 # Risorse Bapco
-'''
-appbuilder.add_view(CommentsView, "Comments",
-                    icon="fa-paper-plane", category="Admin",
+
+#appbuilder.add_view_no_menu(CommentsView)
+appbuilder.add_view(GeaDocReqView, "GeaDoc Request",
+                    icon="fa-paper-plane", category="Supervisor",
                     category_icon='fa-bold')
-'''
+
 appbuilder.add_view(Oldcodes, "Old Codes Upload",
                     icon="fa-paper-plane", category="Supervisor",
                     category_icon='fa-bold')

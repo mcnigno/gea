@@ -1,6 +1,6 @@
 from flask_appbuilder import Model
 from flask_appbuilder.models.mixins import AuditMixin
-from sqlalchemy import Column, Integer, String, ForeignKey 
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Text 
 from sqlalchemy.orm import relationship
 from time import gmtime, strftime
 from flask import Markup
@@ -22,7 +22,7 @@ def mydefault():
     return 'func'
 
 
-class Job(Model):
+class Job(AuditMixin, Model):
     __tablename__ = "job"
     id = Column(Integer, primary_key=True)
     job = Column(String(5), unique=True, nullable=False)
@@ -34,7 +34,7 @@ class Job(Model):
     
 
 
-class Discipline(Model):
+class Discipline(AuditMixin, Model):
     __tablename__ = "discipline"
     id = Column(Integer, primary_key=True)
     discipline = Column(String(1), unique=True, nullable=False)
@@ -46,10 +46,11 @@ class Discipline(Model):
 
 
 
-class Unit(Model):
+class Unit(AuditMixin, Model):
     __tablename__ = "unit"
     id = Column(Integer, primary_key=True)
-    unit = Column(String(3), unique=True, nullable=False)
+    
+    unit = Column(String(2), unique=True, nullable=False)
     name = Column(String(100))
     start = Column(Integer, default=0)
     stop = Column(Integer)
@@ -59,7 +60,7 @@ class Unit(Model):
     def __repr__(self):
         return self.unit + " | " + self.name
 
-class Application(Model):
+class Application(AuditMixin, Model):
     __tablename__ = "application"
     id = Column(Integer, primary_key=True)
     application = Column(String(2), unique=True, nullable=False)
@@ -69,7 +70,7 @@ class Application(Model):
     def __repr__(self):
         return self.application + " | " + self.name
     
-class Doctype(Model):
+class Doctype(AuditMixin, Model):
     __tablename__ = "doctype"
     id = Column(Integer, primary_key=True)
     doctype = Column(String(1), unique=True, nullable=False)
@@ -78,12 +79,13 @@ class Doctype(Model):
     
     def __repr__(self):
         return self.doctype + " | " + self.name
+        #return self.name
 
-class Subdoctype(Model):
+class Subdoctype(AuditMixin, Model):
     __tablename__ = "subdoctype"
     id = Column(Integer, primary_key=True)
     doctype_id = Column(Integer, ForeignKey('doctype.id'), nullable=False)
-    doctype = relationship('Doctype')
+    doctype = relationship(Doctype)
     subdoctype = Column(String(1), unique=True, nullable=False)
     name = Column(String(100))
     description = Column(String(100))
@@ -91,8 +93,9 @@ class Subdoctype(Model):
     
     def __repr__(self):
         return self.subdoctype + " | " + self.name + " | " + self.description
+        #return self.name
 
-class Domain(Model):
+class Domain(AuditMixin, Model):
     __tablename__ = "domain"
     id = Column(Integer, primary_key=True)
     domain = Column(String(1), unique=True, nullable=False)
@@ -103,7 +106,7 @@ class Domain(Model):
         return self.domain + " | " + self.name
 
 
-class Partner(Model):
+class Partner(AuditMixin, Model):
     __tablename__ = "partner"
     id = Column(Integer, primary_key=True)
     partner = Column(String(50), unique=True, nullable=False)
@@ -116,7 +119,7 @@ class Partner(Model):
         return self.partner + " | " + self.name
 
 
-class Documentclass(Model):
+class Documentclass(AuditMixin, Model):
     __tablename__ = "documentclass"
     id = Column(Integer, primary_key=True)
     documentclass = Column(String(1), unique=True, nullable=False)
@@ -127,7 +130,7 @@ class Documentclass(Model):
         return self.documentclass + " | " + self.name
 
 
-class Cdrlitem(Model):
+class Cdrlitem(AuditMixin, Model):
     __tablename__ = "cdrlitem"
     id = Column(Integer, primary_key=True)
     cdrlitem = Column(String(35), unique=True, nullable=False)
@@ -138,7 +141,7 @@ class Cdrlitem(Model):
         return self.cdrlitem + " | " + self.name
 
 
-class Vendor(Model):
+class Vendor(AuditMixin, Model):
     __tablename__ = "vendor"
     id = Column(Integer, primary_key=True)
     vendor = Column(String(50), unique=True, nullable=False)
@@ -149,7 +152,7 @@ class Vendor(Model):
         return self.vendor + " | " + self.name
 
 
-class Mr(Model):
+class Mr(AuditMixin, Model):
     __tablename__ = "mr"
     id = Column(Integer, primary_key=True)
     mr = Column(String(50), unique=True, nullable=False)
@@ -160,7 +163,7 @@ class Mr(Model):
         return self.mr + " | " + self.name
 
 
-class Matrix(Model):
+class Matrix(AuditMixin, Model):
     __tablename__ = "matrix"
     id = Column(Integer, primary_key=True)
     matrix = Column(String(50))
@@ -247,7 +250,7 @@ class DocRequests(AuditMixin, Model):
             return Markup('<img border="0" src="/static/img/vendor.png" alt="W3Schools" width="24" height="24"> ') 
             
         elif self.request_type == 'engineering':
-            return Markup('<img border="0" src="/static/img/engineering.png" alt="W3Schools" width="24" height="24"> ')
+            return Markup('<i class="far fa-file-alt"></i>')
     
         else:
             return '#ND'    
@@ -265,7 +268,7 @@ class DocRequests(AuditMixin, Model):
         return Markup(desc_eng)
 
     def doctype_c(self):
-        return str(self.doctype)
+        return str(self.doctype_id)
     
     def unit_c(self):
         return str(self.unit)
@@ -302,6 +305,7 @@ class DocRequests(AuditMixin, Model):
 
     def partner_c(self):
         return str(self.partner)
+    
     
     
 
@@ -380,13 +384,13 @@ class Document(AuditMixin, Model):
     
     def bapco_code(self):
         if self.oldcode == 'empty':
-            return Markup('<span style="color:#f89406">[ '+'<span style="color:#4b1f68">'+ self.code + '<span style="color:#f89406"> ]')
+            return Markup('<span style="color:#f89406">[ '+'<span style="color:#2c3e50">'+ self.code + '<span style="color:#f89406"> ]')
         
         elif self.oldcode == 'void':
-            return Markup('<span style="color:#ee5f5b">[ '+'<span style="color:#4b1f68">'+ self.code + '<span style="color:#ee5f5b"> ]')
+            return Markup('<span style="color:#ee5f5b">[ '+'<span style="color:#2c3e50">'+ self.code + '<span style="color:#ee5f5b"> ]')
 
         else:
-            return Markup('<span style="color:#5bc0de">[ '+'<span style="color:#4b1f68">'+ self.code + '<span style="color:#5bc0de"> ]') 
+            return Markup('<span style="color:#5bc0de">[ '+'<span style="color:#2c3e50">'+ self.code + '<span style="color:#5bc0de"> ]') 
 
     def cdrl_item(self):
         if self.docrequests.cdrlitem:
@@ -399,21 +403,87 @@ class Document(AuditMixin, Model):
 class Comments(AuditMixin,Model):
     __tablename__ = "comments"
     id = Column(Integer, primary_key=True)
-    doc_id = Column(Integer, ForeignKey('document.id'), nullable=False)
-    doc = relationship(Document)
-    comment = Column(String(250))
-    closed = Column(String(3), default='no')
 
+    comment = Column(String(250))
+
+    closed = Column(Boolean, default=False)
+    included = Column(Boolean, default=False)
+
+    sheet = Column(String(3), default='001')
+
+    doc_id = Column(Integer, ForeignKey('document.id'))
+    doc = relationship(Document)
+
+    unit_id = Column(Integer, ForeignKey('unit.id'))
+    unit = relationship('Unit')
+    
+    application_id = Column(Integer, ForeignKey('application.id'))
+    application = relationship('Application')
+    
+    job_id = Column(Integer, ForeignKey('job.id'))
+    job = relationship('Job')
+    
+    subdoctype_id = Column(Integer, ForeignKey('subdoctype.id'))
+    subdoctype = relationship('Subdoctype')
+    
+    domain_id = Column(Integer, ForeignKey('domain.id'))
+    domain = relationship('Domain')
+    
+    discipline_id = Column(Integer, ForeignKey('discipline.id'))
+    discipline = relationship('Discipline')
+    
+    doctype_id = Column(Integer, ForeignKey('doctype.id'))
+    doctype = relationship('Doctype')
+    
+    partner_id = Column(Integer, ForeignKey('partner.id'))
+    partner = relationship('Partner')
+    
+    cdrlitem_id = Column(Integer, ForeignKey('cdrlitem.id'))
+    cdrlitem = relationship('Cdrlitem')
+    
+    documentclass_id = Column(Integer, ForeignKey('documentclass.id'))
+    documentclass = relationship('Documentclass')
+    
+    vendor_id = Column(Integer, ForeignKey('vendor.id'))
+    vendor = relationship('Vendor')
+    
+    mr_id = Column(Integer, ForeignKey('mr.id'))
+    mr = relationship('Mr')
+    
+    matrix_id = Column(Integer, ForeignKey('matrix.id'))
+    matrix = relationship('Matrix')
+    
     def created(self):
         date = self.created_on
         #return date.strftime('We are the %d, %b %Y')
         
-        #return Markup(_(momentjs(self.created_on).calendar() + ' | ' + momentjs(self.created_on).fromNow()))
+        return Markup(_(momentjs(self.created_on).calendar() + ' | ' + momentjs(self.created_on).fromNow()))
         #return self.created_on.strftime('%d, %b %Y - %H:%M:%S')
-        return Markup(momentjs(self.created_on).format('D MMM Y | LT'))
+        #return Markup(momentjs(self.created_on).format('D MMM Y | LT'))
     
     def modified(self):
         #date = self.created_on
         #return date.strftime('We are the %d, %b %Y')
-        return self.changed_on.strftime('%d, %b %Y - %H:%M:%S')
+        return Markup('<span><i class="fas fa-calendar-alt"></i></span>') + self.changed_on.strftime('%d, %b %Y ')+ momentjs(self.created_on).fromNow() + self.icon_status()
 
+    def icon_closed(self):
+        try:
+            if self.closed == True:
+                return Markup('<span class="closed_true"><i class="fas fa-thumbs-up"></i></span>')
+            return Markup('<span class="closed_false"><i class="fas fa-thumbs-up"></i></span>')
+        except:
+            pass
+    
+    def icon_included(self):
+        try:
+            if self.included == True:
+                return Markup('<span class="included_true"><i class="fas fa-check"></i></span>')
+            return Markup('<span class="included_false"><i class="fas fa-check"></i></span>')
+        except:
+            pass
+    
+    def icon_status(self):
+        return Markup('<span class="com_icon">' + str(self.icon_included()) + str(self.icon_closed()) + '</span>')
+
+    def changed_by(self):
+        return Markup('<span><i class="fas fa-user"></i>by '+ str(self.created_by) + '</span>')

@@ -51,9 +51,7 @@ body {
 }
 
 
-table {
-    font-size: 12px;
-}
+
 svg:not(:root).svg-inline--fa.element {
     overflow: visible;
     margin: 0px 7px;
@@ -78,4 +76,25 @@ td.total {
     width: 1%;
 }
 
+span.included_false {
+    margin-left: 20px;
+    color: #dddddd
+}
 
+span.included_true {
+    margin-left: 20px;
+    color: #b6b77d
+}
+
+span.closed_false {
+    margin: 2px;
+    color: #c2c2c2
+}
+span.closed_true {
+    margin: 2px;
+    color: #b6b77d
+}
+svg:not(:root).svg-inline--fa {
+    overflow: visible;
+    margin-right: 10px;
+}
