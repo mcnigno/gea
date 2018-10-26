@@ -624,7 +624,7 @@ def setting_update(file):
             elif set_class == 'Job':
                 my_class.job = param
             elif set_class == 'Discipline':
-                my.class.discipline = param
+                my_class.discipline = param
             elif set_class == 'Application':
                 my_class.application = param
             elif set_class == 'Doctype':
