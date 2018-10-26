@@ -2,7 +2,7 @@ from app import db
 from flask_appbuilder.models.sqla.interface import SQLAInterface
 from flask import flash, send_file, make_response, redirect, url_for
 
-from .models import (Matrix, Document,Job, Unit, Application, Doctype, Subdoctype, Domain, Partner,
+from .models import (Matrix, Document,Job,Discipline, Unit, Application, Doctype, Subdoctype, Domain, Partner,
                      Cdrlitem, Documentclass, Mr, Vendor, DocRequests)
 #from .views import send_csv
 import csv, xlsxwriter
