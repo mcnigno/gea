@@ -37,9 +37,14 @@ from flask_appbuilder.security.sqla.models import User
 from .momentjs import momentjs
 from flask import Markup
 from .widgets import MyListWidget 
-from flask_appbuilder.widgets import FormHorizontalWidget, FormInlineWidget, FormWidget, FormVerticalWidget
+from flask_appbuilder.widgets import (FormHorizontalWidget, 
+                                      FormInlineWidget, FormWidget, 
+                                      FormVerticalWidget, FormHorizontalWidget)
 from .comments import CommentsView
-from .widgets import MyListWidget
+from .widgets import MyListWidget, MyEditWidget
+
+
+
 ALLOWED_EXTENSIONS = set(['xlsx'])
 
  
@@ -197,7 +202,7 @@ class PendingView(ModelView):
     edit_title = 'Edit Code'
     show_title = 'Show Code'
     
-    list_columns = ['code_type', 'bapco_code', 'oldcode_p', 'notes', 'created', 'status']
+    list_columns = ['code_type', 'document_code', 'oldcode_p', 'notes', 'created', 'status']
     edit_columns = ['oldcode', 'notes']
     
     label_columns = {
@@ -237,7 +242,7 @@ class SuperDocumentView(CompactCRUDMixin, ModelView):
     datamodel = SQLAInterface(Document)
     list_title = 'Supervisor | Document Codes'
     #list_widget = MyListWidget
-    
+    #page_size = 100  
     base_order = ('id', 'desc')
     #base_filters = [['created_by', FilterEqualFunction, get_user]]
     base_permissions = ['can_list', 'can_show', 'can_edit', 'can_delete'] 
@@ -246,7 +251,7 @@ class SuperDocumentView(CompactCRUDMixin, ModelView):
     show_title = 'Show Code'
     show_exclude_columns = 'docrequests'
 
-    list_columns = ['code_type', 'bapco_code', 'oldcode_p', 'created_by', 'created','cdrlitem', 'documentclass', 'status']
+    list_columns = ['status', 'document_code', 'oldcode_p','sub_icon', 'created_by', 'created']
     edit_columns = ['oldcode', 'cdrlitem', 'documentclass', 'notes']
     search_columns = ['job','unit', 'application', 'doctype', 'partner', 'cdrlitem', 'documentclass','code', 'oldcode', 'created_by', 'created_on']
     label_columns = {
@@ -292,6 +297,8 @@ class SuperDocumentView(CompactCRUDMixin, ModelView):
         self.update_redirect()
         return send_file('static/csv/' + filename, as_attachment=True)
     
+
+    
     @expose('/ex')
     def ex(self):
         for item in items:
@@ -323,7 +330,7 @@ class SuperDocumentView(CompactCRUDMixin, ModelView):
 
 # Engineering Form Request
 
-
+ 
 # Vendor Form Request
 class VendorRequestsView(ModelView):
     datamodel = SQLAInterface(DocRequests)
@@ -530,9 +537,9 @@ class SubdoctypeView(ModelView):
     list_columns = ['doctype', 'subdoctype', 'name', 'description']
 
     add_columns = ['doctype','subdoctype', 'name', 'description']
-    edit_columns = ['doctype','subdoctype', 'name', 'description']
+    edit_columns = ['doctype','subdoctype', 'name', 'description','icon']
     show_columns = ['doctype','subdoctype', 'name', 'description']
-    
+    edit_widget = MyEditWidget
     related_views = [CommentsView]
 
     @action("muldelete", "Delete", "Delete all Really?", "fa-rocket")
@@ -1217,8 +1224,8 @@ class DocumentView(CompactCRUDMixin, ModelView):
     show_title = 'Show Code'
 
     
-    #show_columns = ['id', 'code_type', 'bapco_code', 'oldcode', 'created_by', 'created', 'status']
-    list_columns = ['code_type', 'bapco_code', 'oldcode_p','notes', 'created', 'status']
+    #show_columns = ['id', 'code_type', 'document_code', 'oldcode', 'created_by', 'created', 'status']
+    list_columns = ['code_type', 'document_code', 'oldcode_p','notes', 'created', 'status']
     edit_columns = ['oldcode', 'notes']
     
     search_columns = ['unit', 'application', 'doctype', 'partner', 'cdrlitem', 'documentclass','code', 'oldcode', 'created_by', 'created_on']

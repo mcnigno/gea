@@ -98,3 +98,110 @@ svg:not(:root).svg-inline--fa {
     overflow: visible;
     margin-right: 10px;
 }
+
+.dataTables_wrapper .dataTables_filter input {
+    margin-left: 0.5em;
+    margin-right: 5em; 
+    width: 300px;
+    background-color: #ecf0f1;
+}
+i#reserved {
+    color: #58acce;
+    margin-left: 0.5em;
+}
+
+i#destroyed {
+    color: rgb(196, 82, 82);
+    margin-left: 0.5em;
+}
+
+i#pending {
+    color: rgb(219, 154, 68);
+    margin-left: 0.5em;
+    
+}
+i#subdoctype {
+    color: rgb(99, 74, 116);
+    margin-left: 0.5em;
+    
+}
+
+i:hover {
+    position: relative;
+}
+
+i[title]:hover:after {
+    
+    content: attr(title);
+    padding: 18px 18px;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    white-space: nowrap;
+    z-index: 30px;
+    
+    background:#04a1dd;
+    color: #ffffff;
+    
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+i#pending[popup]:hover:after {
+    
+    content: attr(popup);
+    padding: 8px 8px;
+    position: absolute;
+    left: 10;
+    top: 100%;
+    white-space: nowrap;
+    z-index: -20px;
+    background:rgb(219, 154, 68);
+    color: #ffffff;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-variant-caps: all-small-caps
+}
+i#reserved[popup]:hover:after {
+    
+    content: attr(popup);
+    padding: 8px 8px;
+    position: absolute;
+    left: 10;
+    top: 100%;
+    white-space: nowrap;
+    z-index: -20px;
+    background:#58acce;
+    color: #ffffff;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-variant-caps: all-small-caps
+
+}
+i#destroyed[popup]:hover:after {
+    
+    content: attr(popup);
+    padding: 8px 8px;
+    position: absolute;
+    left: 10;
+    top: 100%;
+    white-space: nowrap;
+    z-index: -20px;
+    background:rgb(196, 82, 82);
+    color: #ffffff;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-variant-caps: all-small-caps
+
+}
+i#subdoctype[popup]:hover:after {
+    
+    content: attr(popup);
+    padding: 8px 8px;
+    position: absolute;
+    left: 10;
+    top: 100%;
+    white-space: nowrap;
+    z-index: -20px;
+    background:rgb(99, 74, 116);
+    color: #ffffff;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-variant-caps: all-small-caps
+
+}

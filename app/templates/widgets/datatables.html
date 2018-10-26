@@ -2,8 +2,6 @@
 
 {% block head_css %}
     {{ super() }}
-      
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
     <link rel="stylesheet" href="{{url_for('static',filename='css/mycss.css')}}"></link>
     <link rel="stylesheet" href="{{url_for('static',filename='css/dropzone.css')}}"></link>
 
@@ -11,16 +9,14 @@
 
 {% block head_js %}
     {{ super() }}
-
-
     <script src="{{url_for('static',filename='js/moment.js')}}"></script>
     <script src="{{url_for('static',filename='js/dropzone.js')}}"></script>
     <script src="{{url_for('static',filename='js/custom.js')}}"></script>
   
     
     
-  
-<!--
+    
+    <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"></link>
 
     <script defer src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
@@ -30,6 +26,5 @@
     <script defer src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script defer src="https://cdn.datatables.net/buttons/1.5.4/js/dataTables.buttons.min.js"></script>
     <script defer src="https://editor.datatables.net/extensions/Editor/css/editor.dataTables.min.css"></script>
--->
     {% endblock %}
 

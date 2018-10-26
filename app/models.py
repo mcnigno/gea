@@ -1,11 +1,12 @@
 from flask_appbuilder import Model
-from flask_appbuilder.models.mixins import AuditMixin
+from flask_appbuilder.models.mixins import AuditMixin, ImageColumn
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Text 
 from sqlalchemy.orm import relationship
 from time import gmtime, strftime
 from flask import Markup
 from .momentjs import momentjs
 from flask_babel import lazy_gettext as _
+from flask_appbuilder.models.decorators import renders
 #from .helpers import gen_excel_byreq
 
 
@@ -28,11 +29,11 @@ class Job(AuditMixin, Model):
     job = Column(String(5), unique=True, nullable=False)
     name = Column(String(100))
     description = Column(String(100))
+    #picture = ImageColumn(thumbnail_size=(29,20,True), size=(100,100,True))
 
     def __repr__(self):
         return self.job + " | " + self.name
     
-
 
 class Discipline(AuditMixin, Model):
     __tablename__ = "discipline"
@@ -89,11 +90,20 @@ class Subdoctype(AuditMixin, Model):
     subdoctype = Column(String(1), unique=True, nullable=False)
     name = Column(String(100))
     description = Column(String(100))
+    icon = Column(String(50))
 
     
     def __repr__(self):
         return self.subdoctype + " | " + self.name + " | " + self.description
         #return self.name
+    
+    def icon_font(self):
+        return Markup('<i class="'+ self.icon +'"></i>')
+
+    @renders('icon')
+    def sub_icon(self):
+    # will render this columns as bold on ListWidget
+        return Markup('<i class="'+ self.icon +'"></i>')
 
 class Domain(AuditMixin, Model):
     __tablename__ = "domain"
@@ -247,10 +257,11 @@ class DocRequests(AuditMixin, Model):
     def req_type(self):
 
         if self.request_type == 'vendor':  
-            return Markup('<img border="0" src="/static/img/vendor.png" alt="W3Schools" width="24" height="24"> ') 
-            
+            #return Markup('<img border="0" src="/static/img/vendor.png" alt="W3Schools" width="24" height="24"> ') 
+            return Markup('<i id="vend" class="far fa-file-alt"></i>')
+
         elif self.request_type == 'engineering':
-            return Markup('<i class="far fa-file-alt"></i>')
+            return Markup('<i id="eng" class="far fa-file-alt"></i>')
     
         else:
             return '#ND'    
@@ -357,19 +368,28 @@ class Document(AuditMixin, Model):
         if self.oldcode == 'empty' or self.oldcode == 'void':
             return ''
         return self.oldcode
+    
+    def sub_icon(self):
+        return Markup('<i id="subdoctype" class="'+ str(self.subdoctype.icon) +'" popup="'+ str(self.subdoctype) +'"></i>')
 
+    
     def status(self):
         if self.oldcode == 'empty':
-            return Markup('<img border="0" src="/static/img/pending.png" alt="W3Schools" width="16" height="16">'+' Pending')
+            #return Markup('<img border="0" src="/static/img/pending.png" alt="W3Schools" width="16" height="16">'+' Pending')
+            return self.docrequests.req_type() + self.sub_icon()  + Markup('<i id="pending" class="fas fa-unlock-alt" popup="Pending | Last update: ' + self.modified() + '" ></i>')     
+
         elif self.oldcode == 'void':
-            return Markup('<img border="0" src="/static/img/destroyed.png" alt="W3Schools" width="16" height="16">'+' Destroyed')
+            #return Markup('<img border="0" src="/static/img/destroyed.png" alt="W3Schools" width="16" height="16">'+' Destroyed')
+            return self.docrequests.req_type() + self.sub_icon() + Markup('<i id="destroyed" class="fas fa-exclamation-circle" popup="Destroyed | Last update: ' + self.modified() + '" ></i>')
+
         else:
-            return Markup('<img border="0" src="/static/img/reserved.png" alt="W3Schools" width="16" height="16">'+' Reserved')
-
+            #return Markup('<img border="0" src="/static/img/reserved.png" alt="W3Schools" width="16" height="16">'+' Reserved')
+            return self.docrequests.req_type() + self.sub_icon() + Markup('<i id="reserved" class="fas fa-lock" popup="Reserved | Last update: ' + self.modified() + '" ></i>')     
+    
     def code_type(self):
-        return self.docrequests.req_type()
+        return self.docrequests.req_type() 
 
-    def created(self):
+    def created(self):   
         date = self.created_on
         #return date.strftime('We are the %d, %b %Y')
         
@@ -381,8 +401,9 @@ class Document(AuditMixin, Model):
         #date = self.created_on
         #return date.strftime('We are the %d, %b %Y')
         return self.changed_on.strftime('%d, %b %Y - %H:%M:%S')
-    
-    def bapco_code(self):
+
+
+    def document_code(self):
         if self.oldcode == 'empty':
             return Markup('<span style="color:#f89406">[ '+'<span style="color:#2c3e50">'+ self.code + '<span style="color:#f89406"> ]')
         
