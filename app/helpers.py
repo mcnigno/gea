@@ -2,7 +2,7 @@ from app import db
 from flask_appbuilder.models.sqla.interface import SQLAInterface
 from flask import flash, send_file, make_response, redirect, url_for
 
-from .models import (Matrix, Document,Job,Discipline, Unit, Application, Doctype, Subdoctype, Domain, Partner,
+from .models import (Matrix, Document,Job, Discipline, Unit, Application, Doctype, Subdoctype, Domain, Partner,
                      Cdrlitem, Documentclass, Mr, Vendor, DocRequests)
 #from .views import send_csv
 import csv, xlsxwriter
@@ -623,6 +623,8 @@ def setting_update(file):
                 my_class.unit = param
             elif set_class == 'Job':
                 my_class.job = param
+            elif set_class == 'Discipline':
+                my.class.discipline = param
             elif set_class == 'Application':
                 my_class.application = param
             elif set_class == 'Doctype':
