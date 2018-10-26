@@ -591,7 +591,7 @@ def setting_update(file):
         set_dict = {
             'Job': [Job, Job.job],
             'Discipline': [Discipline, Discipline.discipline],
-            'Unit': [Unit, Unit.unit, 'unit'],
+            'Unit': [Unit, Unit.unit],
             'Application': [Application, Application.application],
             'Doctype': [Doctype, Doctype.doctype],
             'Subdoctype': [Subdoctype, Subdoctype.subdoctype],
