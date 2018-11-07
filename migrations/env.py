@@ -21,7 +21,6 @@ logger = logging.getLogger('alembic.env')
 from flask import current_app
 config.set_main_option('sqlalchemy.url',
                        current_app.config.get('SQLALCHEMY_DATABASE_URI'))
-
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
