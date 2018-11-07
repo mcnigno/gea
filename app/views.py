@@ -1471,7 +1471,7 @@ class CommentsView(ModelView):
 
 '''
 ## Flask migrate with Alembic instead of this
-db.create_all()
+#db.create_all()
 
 # Risorse Bapco
 
