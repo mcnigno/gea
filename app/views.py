@@ -782,7 +782,7 @@ class DocRequestsView(ModelView):
     #add_columns = ['unit']
 
     add_form_extra_fields = {
-                    'doctype': AJAXSelectField('doctype',
+                    'DocType': AJAXSelectField('doctype',
                     description='Select the Document Type',
                     datamodel=datamodel,
                     col_name='doctype',
@@ -794,7 +794,7 @@ class DocRequestsView(ModelView):
                     description='This selection is based on the Document Type.',
                     datamodel=datamodel,
                     col_name='subdoctype',
-                    widget=Select2SlaveAJAXWidget(master_id='doctype',
+                    widget=Select2SlaveAJAXWidget(master_id='DocType',
                     endpoint='/geadocreqview/api/column/add/subdoctype?_flt_0_doctype_id={{ID}}'))
                     }
     
@@ -810,7 +810,7 @@ class DocRequestsView(ModelView):
                                         'unit',
                                         'discipline',
                                         'application',
-                                        'doctype',
+                                        'DocType',
                                         'subdoctype2',
                                         'domain',
                                         'cdrlitem',
