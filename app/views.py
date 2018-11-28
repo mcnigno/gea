@@ -742,13 +742,10 @@ class DocRequestsView(ModelView):
         'documentclass': 'Doc Class',
         'partner': 'Partner',
         'quantity': 'Qty',
-        
         'csv': 'XLS',
         'req_type': 'Type',
         'req_description': 'Description',
         'created': 'Created on',
-        
-
     }
     base_order = ('id', 'desc')
     base_filters = [['created_by', FilterEqualFunction, get_user],
@@ -770,8 +767,8 @@ class DocRequestsView(ModelView):
     #related_views = [DocumentView]
     #list_widget = ListThumbnail
     title = "Document Code Request"
-    #
-    
+    # 
+      
     list_columns = ['req_type', 'quantity', 'req_description', 'created_by', 'created']
     
     #edit_columns = ['unit', 'application', 'doctype', 'cdrlitem','documentclass', 'partner']
@@ -783,8 +780,9 @@ class DocRequestsView(ModelView):
     
     #add_exclude_columns = ['id', 'matrix']
     #add_columns = ['unit']
+
     add_form_extra_fields = {
-                    'DocType': AJAXSelectField('DocType',
+                    'doctype': AJAXSelectField('doctype',
                     description='Select the Document Type',
                     datamodel=datamodel,
                     col_name='doctype',
@@ -796,7 +794,7 @@ class DocRequestsView(ModelView):
                     description='This selection is based on the Document Type.',
                     datamodel=datamodel,
                     col_name='subdoctype',
-                    widget=Select2SlaveAJAXWidget(master_id='DocType',
+                    widget=Select2SlaveAJAXWidget(master_id='doctype',
                     endpoint='/geadocreqview/api/column/add/subdoctype?_flt_0_doctype_id={{ID}}'))
                     }
     
@@ -812,7 +810,7 @@ class DocRequestsView(ModelView):
                                         'unit',
                                         'discipline',
                                         'application',
-                                        'DocType',
+                                        'doctype',
                                         'subdoctype2',
                                         'domain',
                                         'cdrlitem',
