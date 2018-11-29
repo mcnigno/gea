@@ -94,7 +94,7 @@ class Subdoctype(AuditMixin, Model):
 
     
     def __repr__(self):
-        return self.subdoctype + " | " + self.name + " | " + self.description
+        return str(self.subdoctype) + " | " + str(self.name) + " | " + str(self.description)
         #return self.name
     
     def icon_font(self):
