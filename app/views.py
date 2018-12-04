@@ -813,8 +813,7 @@ class DocRequestsView(ModelView):
                                         'DocType',
                                         'subdoctype2',
                                         'domain',
-                                        'cdrlitem',
-                                        'documentclass',
+            
 
                                         #'doctype2',
                                         #'subdoctype2',
