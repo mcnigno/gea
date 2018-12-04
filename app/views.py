@@ -782,7 +782,7 @@ class DocRequestsView(ModelView):
     #add_columns = ['unit']
 
     add_form_extra_fields = {
-                    'DocType': AJAXSelectField('doctype',
+                    'DocType': AJAXSelectField('DocType',
                     description='Select the Document Type',
                     datamodel=datamodel,
                     col_name='doctype',
